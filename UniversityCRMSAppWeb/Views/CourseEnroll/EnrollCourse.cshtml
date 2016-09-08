@@ -1,0 +1,177 @@
+@using UniversityCRMSAppWeb.Models
+@model UniversityCRMSAppWeb.Models.CourseEnroll
+@{
+    ViewBag.Title = "EnrollCourse";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<Student> listOfStudentRegNo = ViewBag.listOfStudentRegNo;
+    listOfStudentRegNo.Insert(0, new Student(null, "RRR", "---Select---"));
+}
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>Enroll Course</title>
+    </head>
+<body>
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-datepicker.css" rel="stylesheet" />
+    @using (Html.BeginForm())
+    {
+        <fieldset>
+            <legend>Enroll In A Course</legend>
+            <div class="form-horizontal">
+                <div class="form-group">
+                    @Html.LabelFor(courseEnroll => courseEnroll.StudentId, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-10">
+                        @Html.DropDownListFor(courseEnroll => courseEnroll.StudentId, new SelectList(listOfStudentRegNo, "Id", "RegNo"), new { id = "studentId" })
+                        @Html.ValidationMessageFor(courseEnroll => courseEnroll.StudentId)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(courseEnroll => courseEnroll.Name, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-10">
+                        @Html.TextBoxFor(courseEnroll => courseEnroll.Name, new { name = "Name", id = "Name", @placeholder = "Student Name", @readonly = "readonly" })
+                        @Html.ValidationMessageFor(courseEnroll => courseEnroll.Name)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(courseEnroll => courseEnroll.Email, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-10">
+                        @Html.TextBoxFor(courseEnroll => courseEnroll.Email, new { name = "Email", id = "Email", @placeholder = "Student Email", @readonly = "readonly" })
+                        @Html.ValidationMessageFor(courseEnroll => courseEnroll.Email)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(courseEnroll => courseEnroll.Department, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-10">
+                        @Html.TextBoxFor(courseEnroll => courseEnroll.Department, new { name = "Department", id = "Department", @placeholder = "Department", @readonly = "readonly" })
+                        @Html.ValidationMessageFor(courseEnroll => courseEnroll.Department)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-2 control-label">
+                        <label for="CourseId">Select Course</label>
+                    </div>
+                    <div class="col-sm-10">
+                        <select name="CourseId" id="CourseId" class="form-control"></select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(courseEnroll => courseEnroll.EnrollDate, new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-10">
+                        @Html.TextBoxFor(courseEnroll => courseEnroll.EnrollDate, new { @id = "EnrollDate", @name = "EnrollDate", @class = "datepicker", @placeholder = "Select Date" })
+                        @Html.ValidationMessageFor(courseEnroll => courseEnroll.EnrollDate)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-default">Enroll</button>
+                    </div>
+                    <h3>@ViewBag.message</h3>
+                </div>
+            </div>
+        </fieldset>
+    }
+</body>
+</html>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/jquery-3.1.0.min.js"></script>
+<script src="~/Scripts/jquery-3.1.0.js"></script>
+<script src="~/Scripts/bootstrap-datepicker.js"></script>
+<script src="~/Scripts/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+@*<script>
+    $('#EnrollDate').datepicker({
+        // format: "yyyy-MM-dd",
+        format: "dd MM, yyyy",
+        autoclose: true,
+        todayHighlight: true,
+
+    });
+</script>*@
+<script>
+    $(function () {
+        $("#EnrollDate").datepicker();
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#studentId").change(function () {
+            var studentId = $("#studentId").val();
+
+
+            $("#CourseId").empty();
+
+            $("#CourseId").append('<option value="">--Select--</option>');
+            var json = { studentId: studentId };
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetNameEmailDepartmentByStudentId", "CourseEnroll")',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(json),
+                success: function (student) {
+                    var studentName = student.StudentName;
+                    var email = student.Email;
+                    var departmentName = student.DepartmentName;
+                    $("#Name").val(studentName);
+                    $("#Email").val(email);
+                    $("#Department").val(departmentName);
+}
+
+                });
+
+
+             
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetAllCourseByStudentDepartmentID", "CourseEnroll")',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(json),
+                success: function (data) {
+
+                    $.each(data, function (key, value) {
+
+                        $("#CourseId").append('<option value=' + value.CourseId + '>' + value.CourseName + '</option>');
+                    });
+                }
+            });
+        });
+    });
+
+</script>
+
+@*<script>
+
+    $(document).ready(function () {
+        $("#studentId").change(function () {
+
+            var studentId = $("#studentId").val();
+
+            $("#CourseId").empty();
+
+            $("#CourseId").append('<option value="">--Select--</option>');
+            var json = { studentId: studentId };
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetAllCourseByStudentDepartmentID", "CourseEnroll")',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(json),
+                success: function (data) {
+
+                    $.each(data, function (key, value) {
+
+                        $("#CourseId").append('<option value=' + value.CourseId + '>' + value.CourseName + '</option>');
+                    });
+                }
+            });
+
+        });
+
+
+    });
+
+</script>*@

@@ -1,0 +1,81 @@
+﻿@using UniversityCRMSAppWeb.Models
+@{
+    Layout = null;
+    List<DepartmentModel> departmentlList = ViewBag.Department;
+    List<DesignationModel> designationlList = ViewBag.Designation;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>SaveTeacher</title>
+</head>
+<body>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <div>
+        <fieldset>
+            <legend> Save teacher</legend>
+            <form method="POST">
+                <table>
+                    <tr>
+                        <td><label>Name</label></td>
+                        <td><input type="text" id="TacherName" required name="TacherName" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Address</label></td>
+                        <td><input type="text" id="Address" name="Address" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Email</label></td>
+                        <td><input type="text" id="Email" name="Email" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Contact Number</label></td>
+                        <td><input type="text" id="ContactNo" required name="ContactNo" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Designation</label></td>
+                        <td>
+                            <select name="DesignationId" id="DesignationId">
+                                <option value="0">--------------Select--------------</option>
+                                @foreach (var designation in designationlList)
+                                {
+                                    <option value="@designation.Id">@designation.Designation</option>
+                                }
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Department</label></td>
+                        <td>
+                            <select name="DepartmentId" id="DepartmentId">
+                                <option value="0">--------------Select--------------</option>
+                                @foreach (var department in departmentlList)
+                                {
+                                    <option value="@department.DepartmentId">@department.DepartmentName</option>
+                                }
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Credit To Be Taken</label></td>
+                        <td><input type="text" id="CreditToBeTaken" required name="CreditToBeTaken" /></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><input type="submit" value="Save" /></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><b> @ViewBag.message</b></td>
+                    <tr>
+                </table>
+            </form>
+        </fieldset>
+    </div>
+</body>
+</html>
+<script src="~/Scripts/bootstrap.min.js"></script>

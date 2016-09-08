@@ -1,0 +1,23 @@
+﻿@using UniversityCRMSAppWeb.Models
+@model IEnumerable<DepartmentModel>
+@{
+    Layout = null;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <div>
+        <fieldset>
+            <legend> View all Departments</legend>
+            <table class="table table-hover table-striped table-bordered">
+                <tr><th>Department Code</th><th>Department Name</th></tr>
+                @foreach (DepartmentModel department in Model)
+                {
+                    <tr>
+                        <td>@department.DepartmentCode</td>
+                        <td>@department.DepartmentName</td>
+                    </tr>
+                }
+            </table>
+        </fieldset>
+    </div>
+<script src="~/Scripts/bootstrap.min.js"></script>

@@ -1,0 +1,124 @@
+﻿@using UniversityCRMSAppWeb.Models
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<CourseModel> courses = ViewBag.Courses;
+    List<GradeLaterModel> grades = ViewBag.GetAllGradeLater;
+    List<SaveResultViewModel> regNoList = ViewBag.RegNo;
+}
+@*<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Save Student Result</title>
+    
+    <script src="~/Scripts/jquery-3.1.0.min.js"></script>
+</head>
+<body>*@
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<fieldset>
+    <legend>Save Student Result</legend>
+    <form method="POST">
+        <table>
+            <tr>
+                <td><label> Student Reg. No.</label></td>
+
+                <td>
+                    <select id="StudentId" name="StudentId">
+
+                        @*<select id="StudentRegId" name="StudentRegId">StudentId
+
+            <option value="">Select...</option>*@
+                        @foreach (var regNo in regNoList)
+                        {
+                            <option value="@regNo.StudentId">@regNo.StudentRegId</option>
+                        }
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label>Name</label></td>
+                <td><input type="text" id="name" name="Name" readonly="readonly" /></td>
+            </tr>
+            <tr>
+                <td><label>Email</label></td>
+                <td><input type="text" id="mail" name="Email" readonly="readonly" /></td>
+                @*<input type="text" name="Email" id="Email" class="form-control" readonly="readonly" />*@
+            </tr>
+            <tr>
+                <td><label>Department</label></td>
+                <td><input type="text" id="department" name="Depertment" readonly="readonly" /></td>
+            </tr>
+            <tr>
+                <td><label>Select Courses</label></td>
+                <td>
+                    <select id="CourseId" name="CourseId"></select>
+                </td>
+            </tr>
+            <tr>
+                <td><label>Grade Letter</label></td>
+                <td>
+                    <select name="GradeLaterId" id="GradeLaterId">
+                        <option value="0">Select...</option>
+                        @foreach (var grade in grades)
+                        {
+                            <option value="@grade.GradeLaterId">@grade.GradeLater</option>
+                        }
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input type="submit" value="Save" /></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td> <b>@ViewBag.message</b></td>
+            <tr>
+</table>
+    </form>
+</fieldset>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/jquery-3.1.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            $("#StudentId").change(function () {
+
+                var RegNo = $("#StudentId").val();
+                //alert(RegNo);
+                $("#CourseId").empty();
+                var json = {
+                    StudentRegId: RegNo
+                };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetAllCourseByRegNo", "SaveStudentResult")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    success: function (data) {
+                        //alert(data);
+                        $.each(data, function (key, value) {
+                            //alert(key);
+                            $("#CourseId").append('<option value=' + value.CourseId + '>' + value.CourseName + '</option>');
+                        });
+                    }
+                });
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetNameEmailDepartmentByStudentId", "SaveStudentResult")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    success: function (student) {
+                        var studentName = student.StudentName;
+                        var email = student.Email;
+                        var departmentName = student.DepartmentName;
+                        $("#name").val(studentName);
+                        $("#mail").val(email);
+                        $("#department").val(departmentName);
+                    }
+                });
+            });
+        });
+    </script>
+@*</body>
+</html>*@

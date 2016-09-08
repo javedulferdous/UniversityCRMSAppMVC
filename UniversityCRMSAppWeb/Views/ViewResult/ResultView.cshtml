@@ -1,0 +1,199 @@
+﻿@using UniversityCRMSAppWeb.Models
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<StudentRegisterModel> regNoList = ViewBag.RegNo;
+    List<SaveResultViewModel> result= ViewBag.Result;
+  //  List<DepartmentModel> dept = ViewBag.Departments;
+}
+
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+     <body>
+    <fieldset>
+        <legend>View Result</legend>
+        <form method="POST">
+            <table>
+                <tr>
+                    <td><label> Student Reg. No.</label></td>
+
+                    <td>
+                        <select id="StudentRegId" name="StudentRegId">
+                            <option value="0">Select...</option>
+                            @foreach (var regNo in regNoList)
+                            {
+                                <option value="@regNo.StudentRegId">@regNo.StudentRegId</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Name</label></td>
+                    <td><input type="text" id="name" name="Name" readonly="readonly" /></td>
+                </tr>
+                <tr>
+                    <td><label>Email</label></td>
+                    <td><input type="text" id="mail" name="Email" readonly="readonly" /></td>
+                </tr>
+                <tr>
+                    <td><label>Department</label></td>
+                    <td><input type="text" id="department" name="Depertment" readonly="readonly" /></td>
+                </tr>
+                <div class="form-group">
+                    <div class="col-lg-offset-4 col-lg-push-8">
+
+                        <input type="button" value="Make PDF" onclick="genPdf()" />
+                    </div>
+                </div>
+                @*<div class="form-group" id="tableDiv">
+                        <table id="viewResult">
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    <th>Grade</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>*@
+                
+                @*<a href="@Url.Action("CreatePDF", "ViewResult")"> Create PDF</a>*@
+            </table>
+        </form>
+
+
+        @*<div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+
+                <a href="@Url.Action("MakePdf", "ResultView")">Make PDF</a>
+
+            </div>*@
+
+        @*<table>
+                <tr>
+                    <td><label>Course Code</label></td>
+                    <td><input type="text" id="CourseCode" name="CourseCode" readonly="readonly" /></td>
+                </tr>
+                <tr>
+                    <td><label>Name</label></td>
+                    <td><input type="text" id="CourseName" name="CourseName" readonly="readonly" /></td>
+                </tr>
+                <tr>
+                    <td><label>Grade</label></td>
+                    <td><input type="text" id="GradeLater" name="GradeLater" readonly="readonly" /></td>
+                </tr>
+            </table>*@
+
+
+
+        @*<table border="1">
+                    <tr>Course Information</tr>
+                    <tr><th bgcolor="#e0e0d1">Course Code</th><th bgcolor="#e0e0d1">Name</th><th bgcolor="#e0e0d1">Grade</th></tr>
+                    @if (result == null)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        foreach (var items in result)
+                        {
+                            <tr>
+                                <td>@items.CourseCode</td>
+                                <td>@items.CourseName</td>
+                                <td>@items.GradeLater</td>
+                            </tr>
+                        }
+                    }
+            </table>*@
+
+        <div id="studentList">
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Course Code</th>
+                        <th>Course Name</th>
+                        <th>Grade</th>
+                    </tr>
+                </thead>
+                <tbody id="student"></tbody>
+            </table>
+        </div>
+    </fieldset>
+
+
+    <script src="~/Scripts/jspdf.min.js"></script>
+    <script src="~/Scripts/jquery-3.1.0.js"></script>
+    <script>
+        var specialElementHandlers = {
+            '#editor': function (element, renderer) {
+                return true;
+            }
+        };
+        function genPdf() {
+            var regNo = $('#StudentRegId option:selected').val();
+            var nam = $('#name').val();
+            var email = $('#mail').val();
+            var dept = $('#department').val();
+            var doc = new jsPDF();
+            doc.setFontSize(22);
+            doc.text(80, 20, 'Result sheet ');
+            doc.setFontSize(16);
+            doc.text(60, 30, 'Registration No. ' + regNo);
+            doc.text(60, 40, 'Name : ' + nam);
+            doc.text(60, 50, 'E-mail : ' + email);
+            doc.text(60, 60, 'Department : ' + dept);
+            doc.setFontSize(14);
+            doc.fromHTML($('#studentList').html(), 20, 70, { 'width': 700, 'elementHandlers': specialElementHandlers });
+            doc.save('StudentResult.pdf');
+        }
+        $(document).ready(function () {
+
+            $("#StudentRegId").change(function () {
+
+                var RegNo = $("#StudentRegId").val();
+                //alert(RegNo);
+                $("#CourseId").empty();
+                $("#CourseCode").empty();
+                $("#CourseName").empty();
+                $("#GradeLater").empty();
+                var json = {
+                    StudentRegId: RegNo
+                };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetNameEmailDepartmentByStudentId", "ViewResult")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    success: function (student) {
+                        var studentName = student.StudentName;
+                        var email = student.Email;
+                        var departmentName = student.DepartmentName;
+                        $("#name").val(studentName);
+                        $("#mail").val(email);
+                        $("#department").val(departmentName);
+                    }
+                });
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetCourseCodeNameGradeByStudentId", "ViewResult")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    success: function (result) {
+                        //var CourseCode = student.CourseCode;
+                        //var CourseName = student.CourseName;
+                        //var GradeLater = student.GradeLater;
+                        //$("#CourseCode").val(CourseCode);
+                        //$("#CourseName").val(CourseName);
+                        //$("#GradeLater").val(GradeLater);
+                        $("#student").empty();
+                        $.each(result, function (key, value) {
+
+                            $("#student").append('<tr><td>' + value.CourseCode + '</td><td>' + value.CourseName + '</td><td>' + value.GradeLater + '</td></tr>');
+                        });
+
+                    }
+                });
+            });
+        });
+    </script>
+</body>

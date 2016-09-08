@@ -1,0 +1,169 @@
+@using System.Runtime.InteropServices.WindowsRuntime
+@using UniversityCRMSAppWeb.Models
+@model UniversityCRMSAppWeb.Models.CourseAssingModel
+@using System.Web.UI.WebControls
+@{
+    ViewBag.Title = "CourseAssignToTeacher";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<DepartmentModel> listOfDepartments = ViewBag.listOfDepartments;
+}
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>AssignToTeacher</title>
+</head>
+<body>
+    <div>
+        @using (Html.BeginForm())
+        {
+            <fieldset>
+                <legend>
+                    @Html.Label("Course Assign To Teacher")
+                </legend>
+                <table>
+                    <tr>
+                        <td>
+                            <table>
+                                <tr>
+                                    <td>@Html.Label("Department", new { @style = "font-size:large;" })</td>
+                                    <td>
+                                        @Html.DropDownListFor(d => d.DepartmentId, new SelectList(listOfDepartments, "DepartmentId", "DepartmentName"), "-----Select Department-----", new { @style = "width: 173px", id = "departmentId" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>@Html.Label("Teacher", new { @style = "font-size:large;" })</td>
+                                    <td>
+                                        @Html.DropDownListFor(d => d.TeacherId, new SelectList(string.Empty, "TeacherId", "TacherName"), new { @style = "width: 173px", id = "teacherid" })
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>@Html.Label("CreditToBeTaken", new { @style = "font-size:large;" })</td>
+                                    <td>@Html.TextBoxFor(m => m.CreditToBeTaken, new { id = "credittobetaken", @readonly = true })</td>
+
+                                </tr>
+                                <tr>
+                                    <td>@Html.Label("RemainingCredit", new { @style = "font-size:large;" })</td>
+                                    <td>@Html.TextBoxFor(r => r.RemainingCredit, new { id = "remainingcredit", @readonly = true })</td>
+                                </tr>
+                                <tr>
+                                    <td>@Html.Label("CourseCode", new { @style = "font-size:large;" })</td>
+                                    <td>@Html.DropDownListFor(c => c.CourseId, new SelectList(string.Empty, "CourseId", "CourseCode"), new { @style = "width: 173px", id = "courseid" })</td>
+                                </tr>
+                                <tr>
+                                    <td>@Html.Label("Name", new { @style = "font-size:large;" })</td>
+                                    <td>@Html.TextBoxFor(a => a.CourseName, new { id = "CourseName", @readonly = true })</td>
+                                </tr>
+                                <tr>
+                                    <td>@Html.Label("Credit", new { @style = "font-size:large;" })</td>
+                                    <td>@Html.TextBoxFor(a => a.CourseCredit, new { id = "CourseCredit", @readonly = true })</td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td align="right">
+                                        <input type="submit" value="Save" id="button" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><b>@ViewBag.message</b></td>
+                                    <td><b>@ViewBag.Message2</b></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                 </table>
+            </fieldset>
+            <div id="dialog-confirm" title="Are You Sure">
+                <p><span style="float:left; margin:0 7px 20px 0;"></span></p>
+            </div>
+        }
+    </div>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/jquery-3.1.0.min.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+
+    <script>
+        $(document)
+            .ready(function () {
+                $("#departmentId")
+                    .change(function () {
+
+                        var deptId = $("#departmentId").val();
+                        $("#teacherid").empty();
+                        $("#courseid").empty();
+                        $("#teacherid").append('<option value="">--Select--</option>');
+
+                        var json = {
+                            departmentId: deptId
+                        };
+
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("GetTeacherByDepartmentId", "CourseAssign")',
+                            contentType: "application/json; charset=utf-8",
+                            data: JSON.stringify(json),
+                            success: function (data) {
+                                $("#CreditToBeTaken").val('');
+                                $("#RemainingCredit").val('');
+
+                                $.each(data,
+                                    function (key, value) { $("#teacherid").append('<option value=' + value.TeacherId + '>' + value.TacherName + '</option>'); });
+                            }
+                        });
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("GetCourseCodeByDepartmentId", "CourseAssign")',
+                            contentType: "application/json; charset=utf-8",
+                            data: JSON.stringify(json),
+                            success: function (data) {
+                                $("#courseid").append('<option value="">--Select--</option>');
+                                $.each(data, function (key, value) { $("#courseid").append('<option value=' + value.CourseId + '>' + value.CourseCode + '</option>'); });
+                            }
+                        });
+
+                    });
+
+                $("#teacherid")
+                    .change(function () {
+
+                        var thrid = $("#teacherid").val();
+                        var json = {
+                            Tid: thrid
+                        };
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("GetTeacherCreditByTeacherId", "CourseAssign")',
+                            contentType: "application/json; charset=utf-8",
+                            data: JSON.stringify(json),
+                            success: function (data) {
+                                $("#credittobetaken").val(data.CreditToBeTaken); $("#remainingcredit").val(data.RemainingCredit);
+                            }
+                        });
+
+                    });
+                $("#courseid").change(function () {
+
+                    var courseid = $("#courseid").val();
+                    var json = { courseId: courseid };
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("GetCourseNameAndCreditByCourseId", "CourseAssign")',
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify(json),
+                        success: function (teacher) {
+                            var courseName = teacher.CourseName;
+                            var credit = teacher.Credit;
+                            $("#CourseName").val(courseName);
+                            $("#CourseCredit").val(credit);
+
+
+                        }
+                    });
+                });
+            });
+
+    </script>
+</body>
+</html>

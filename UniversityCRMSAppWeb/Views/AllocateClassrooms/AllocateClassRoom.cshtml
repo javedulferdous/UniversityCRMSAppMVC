@@ -1,0 +1,145 @@
+﻿@using UniversityCRMSAppWeb.Models
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<DepartmentModel> department = ViewBag.Department;
+    List<RoomModel> room = ViewBag.RoomNo;
+    List<DayModel> day = ViewBag.Day;
+}
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<link href="~/CSS/wickedpicker.min.css" rel="stylesheet" />
+<div>
+    <fieldset>
+        <legend> Allocate ClassRoom</legend>
+        <form method="POST" id="myForm">
+            <table>
+                <tr>
+                    <td><label>Department</label></td>
+                    <td>
+                        <select name="DepartmentId" required id="DepartmentId">
+                            <option value="0">--------------Select--------------</option>
+                            @foreach (var departments in department)
+                            {
+                                <option value="@departments.DepartmentId">@departments.DepartmentName</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="CourseId">Course</label></td>
+                    <td>
+                        <select id="CourseId" name="CourseId"></select>
+                        @*<select id="CourseId" name="CourseId "></select>*@
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Description</label></td>
+                    <td> <input type="text" id="Description" required name="Description" /></td>
+                </tr>
+                <tr>
+                    <td><label>Room No</label></td>
+                    <td>
+                        <select name="RoomId" id="RoomId">
+                            <option value="0">--------------Select--------------</option>
+                            @foreach (var rooms in room )
+                            {
+                                <option value="@rooms.RoomId">@rooms.RoomNo</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>Day</label></td>
+                    <td>
+                        <select name="DayId" id="DayId">
+                            <option value="0">--------------Select--------------</option>
+                            @foreach (var days in day)
+                            {
+                                <option value="@days.DayId">@days.DayName</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>From</label></td>
+                    <td>
+                        <input type="text" name="FromTime" id="FromTime" class="timepicker" />
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>To</label></td>
+                    <td><input type="text" name="ToTime" id="ToTime" class="timepicker" /></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Allocate" /></td>
+                </tr>
+                <tr></tr>
+                <tr>
+                    <td></td>
+                    <td> <b>@ViewBag.message</b></td>
+                <tr>
+</table>
+        </form>
+    </fieldset>
+</div>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/jquery-3.1.0.min.js"></script>
+<script src="~/Scripts/wickedpicker.min.js"></script>
+<script>
+        $(document).ready(function () {
+            $("#DepartmentId").change(function () {
+                var deptId = $("#DepartmentId").val();
+
+                $("#Description").empty();
+                $("#CourseId").empty();
+                $("#FromTime").empty();
+                $("#ToTime").empty();
+                $("#CourseId").append('<option value=0> ' + "-----Select------" + '</option>');
+                var json = {
+                     DepartmentId: deptId
+                };
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("GetCourseByDepartmentId", "AllocateClassrooms")',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(json),
+                    success: function (data) {
+                        //alert(data);
+                      
+                        $.each(data, function (key, value) {
+                            //alert(key);
+                            $("#CourseId").append('<option value=' + value.CourseId + '>' + value.CourseName + '</option>');
+                        });
+                    }
+                });
+            });
+        });
+</script>
+@*<script>
+    $(document).ready(function () {
+        $("#DepartmentId").change(function () {
+            var deptId = $("#DepartmentId").val();
+            $("#courseId").empty();
+            var json = {
+                departmentId: deptId
+            };
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetCourseByDepartmentId", "AllocateClassrooms")',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(json),
+                success: function (data) {
+                    //alert(data);
+                    $.each(data, function (key, value) {
+                        //alert(key);
+                        $("#courseId").append('<option value=' +value.CourseId + '>' + value.CourseName + '</option>');
+                    });
+                }
+            });
+        });    
+    });
+</script>*@
+<script>
+    $('.timepicker').wickedpicker();
+</script>

@@ -1,0 +1,43 @@
+﻿@{
+    Layout = null;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<div id="document">
+    <fieldset>
+        <legend> Save Department</legend>
+        <form method="POST">
+            <table class="table   table-bordered">
+               
+                <tr>
+                    <td><label>Code</label></td>
+                    <td><input type="text" id="DepartmentCode" required name="DepartmentCode" /></td>
+                </tr>
+                <tr>
+                    <td><label>Name</label></td>
+                    <td><input type="text" id="DepartmentName" required name="DepartmentName" /></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Save" /></td>
+                    
+                </tr>
+                <tr>
+                    <td></td>
+                    <td> @ViewBag.message</td>
+                <tr>
+            </table>
+        </form>
+    </fieldset>
+</div>
+@*<script>
+    //$(document).ready(function () {
+        $("#submit").click(function () {
+            var departmentCode = $("#DepartmentCode").val();
+            if (departmentCode < 2 || departmentCode > 7) {
+                alert("code must be two (2) to seven (7) characters long.");
+            }
+        });
+    //});
+</script>*@
+<script src="~/Scripts/bootstrap.min.js"></script>

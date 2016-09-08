@@ -1,0 +1,134 @@
+﻿@using UniversityCRMSAppWeb.Models
+@model UniversityCRMSAppWeb.Models.StudentRegisterViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var students = ViewBag.student;
+    List<DepartmentModel> department = ViewBag.Departments;
+    StudentRegisterViewModel allStudent = ViewBag.AllRegisterStudent;
+}
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Register Student</title>
+</head>
+<body>
+    <div>
+        <fieldset>
+            <legend>Register Student</legend>
+            <form method="POST">
+                <table>
+                    <tr>
+                        <td><label> Name</label></td>
+                        <td><input type="text" id="StudentName" required name="StudentName" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Email</label></td>
+                        <td><input type="text" id="Email" required name="Email" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Contact No.</label></td>
+                        <td><input type="text" id="ContactNo" required name="ContactNo" /></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label> Date</label>
+                        </td>
+                        <td><input type="text" name="RegisterDate" required id="Date" class="datepicker" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Address</label></td>
+                        <td><input type="text" id="Address" required name="Address" /></td>
+                    </tr>
+                    <tr>
+                        <td><label>Department</label></td>
+                        <td>
+                            <select name="DepartmentId" id="DepartmentId">
+                                <option value="0">Select...</option>
+                                @foreach (var departments in department)
+                                {
+                                    <option value="@departments.DepartmentId">@departments.DepartmentName</option>
+                                    @*<label id="DepartmentCode" hidden="true">@departments.DepartmentCode</label>*@
+                                }
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><input type="submit" value="Register" /></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td> @ViewBag.message</td>
+                    <tr>
+</table>
+                <br />
+                <br />
+                <table class="table table-hover table-striped table-bordered">
+
+                    @if (ViewBag.AllRegisterStudent != null)
+                    {
+
+                        <tr>Student Information</tr>
+                        <tr><th>Student Register</th><th>Student Name</th><th>Email </th><th>Department  Name</th><th>Contact No</th><th>Address</th></tr>
+                        foreach (var student in ViewBag.AllRegisterStudent)
+                        {
+                            <tr>
+                                <td>@student.StudentRegisterId</td>
+                                <td>@student.StudentName</td>
+                                <td>@student.Email</td>
+                                <td>@student.DepartmentName</td>
+                                <td>@student.ContactNo</td>
+                                <td>@student.Address</td>
+                            </tr>
+                        }
+                    }
+                </table>
+            </form>
+        </fieldset>
+    </div>
+</body>
+</html>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/jquery-3.1.0.min.js"></script>
+<script src="~/Scripts/jquery-3.1.0.js"></script>
+<script src="~/Scripts/bootstrap-datepicker.js"></script>
+<script src="~/Scripts/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+<script>
+    $(function () {
+        $("#Date").datepicker();
+    });
+ 
+    $(document).ready(function () {
+        $('#ContactNo').blur(function (e) {
+            if (validatePhone('txtPhone')) {
+                $('#spnPhoneStatus').html('Valid');
+                $('#spnPhoneStatus').css('color', 'green');
+            }
+            else {
+                $('#spnPhoneStatus').html('Invalid');
+                $('#spnPhoneStatus').css('color', 'red');
+                alert("Enter a valid 11 digit number");
+            }
+        });
+    });
+
+    function validatePhone(txtPhone) {
+        var a = document.getElementById(txtPhone).value;
+        var filter = /^((\+[1-9]{1,4}[ \-]*)|(\([0-9]{2,3}\)[ \-]*)|([0-9]{2,4})[ \-]*)*?[0-9]{3,4}?[ \-]*[0-9]{3,4}?$/;
+        if (!(filter.test(a) && filter.length == 11)) {
+            
+            return false;
+        }
+        else {
+           
+            return true;
+        }
+    }
+
+    
+</script>
+

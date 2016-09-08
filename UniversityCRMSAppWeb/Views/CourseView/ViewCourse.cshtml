@@ -1,0 +1,71 @@
+﻿@using UniversityCRMSAppWeb.Models
+@model UniversityCRMSAppWeb.Models.CourseModel
+@{
+    ViewBag.Title = "View Course Statics";
+    var courses = ViewBag.Courses;
+    List<DepartmentModel> dept = ViewBag.Departments;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+@*<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ViewCourse</title>
+</head>
+<body>*@
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <div>
+        <fieldset>
+            <legend> View Course Statics</legend>
+            <form method="Post" id="form">
+                <table>
+                    <tr>
+                        <td>DepartmentName</td>
+                        <td>
+                            @Html.DropDownListFor(model => model.DepartmentId, new SelectList(dept, "DepartmentId", "DepartmentName"), "-- Select Department--", new { onchange = "this.form.submit();" })
+                            @Html.ValidationMessageFor(m => m.DepartmentId)
+                        </td>
+                    </tr>
+
+                </table>
+            </form>
+            <br />
+            <br />
+
+            <table class="table table-hover table-striped table-bordered">
+
+                @if (ViewBag.PostBack)
+                {
+
+                    <tr>Course Information</tr>
+                    <tr><th>Code</th><th>Name/Title</th><th >Semester</th><th >Assigned To</th></tr>
+
+                    if (courses == null)
+                    {
+                        return;
+                    }
+                    else
+                    {
+
+                        foreach (var items in courses)
+                        {
+                            <tr>
+                                <td>@items.Code</td>
+                                <td>@items.Name</td>
+                                <td>@items.SemesterName</td>
+                                <td>@items.TeacherName</td>
+                            </tr>
+                        }
+                    }
+
+                }
+
+            </table>
+        </fieldset>
+    </div>
+
+
+<script src="~/Scripts/bootstrap.min.js"></script>

@@ -1,0 +1,67 @@
+﻿@using UniversityCRMSAppWeb.Models
+
+@{
+    Layout = null;
+     Layout = "~/Views/Shared/_Layout.cshtml";
+    List<DepartmentModel> departmentlList = ViewBag.Department;
+    List<SemesterModel> semestersList = ViewBag.Semister;
+}
+<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+<div>
+    <fieldset>
+        <legend> Save Course</legend>
+        <form method="POST">
+            <table>
+                <tr>
+                    <td><label>Code</label></td>
+                    <td><input type="text" id="CourseCode" required name="CourseCode" /></td>
+                </tr>
+                <tr>
+                    <td><label>Name</label></td>
+                    <td><input type="text" id="CourseName" required name="CourseName" /></td>
+                </tr>
+                <tr>
+                    <td><label>Credit</label></td>
+                    <td><input type="text" id="Credit" required name="Credit" /></td>
+                </tr>
+                <tr>
+                    <td><label>Description</label></td>
+                    <td><input type="text" id="Description" name="Description" multiple="multiple" /></td>
+                </tr>
+                <tr>
+                    <td><label>Department</label></td>
+                    <td>
+                        <select name="DepartmentId" id="DepartmentId">
+                            <option value="0">--------------Select--------------</option>
+                            @foreach (var departemtn in departmentlList)
+                            {
+                                <option value="@departemtn.DepartmentId">@departemtn.DepartmentName</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label>semester</label></td>
+                    <td>
+                        <select name="SemesterId" id="SemesterId">
+                            <option value="0">--------------Select--------------</option>
+                            @foreach (var semester in semestersList)
+                            {
+                                <option value="@semester.SemesterId">@semester.Semester</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Save"/></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td> @ViewBag.message</td>
+                <tr>
+</table>
+        </form>
+    </fieldset>
+</div>
+<script src="~/Scripts/bootstrap.min.js"></script>

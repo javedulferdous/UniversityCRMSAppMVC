@@ -1,0 +1,79 @@
+﻿@using System.Drawing
+@using UniversityCRMSAppWeb.Controllers
+@{
+    Layout = null;
+}
+@RenderSection("something", required: false)
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>UCRMS</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="~/Content/bootstrap-theme.min.css" rel="stylesheet" />
+    <link href="~/CSS/wickedpicker.min.css" rel="stylesheet" />
+    <style type="text/css" rel="stylesheet">
+        .hreader {
+            background-color: #3276B1;
+            border-radius: 5px;
+            color: #ffffff;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+    </style>
+    @*<link href="~/CSS/style.css" rel="stylesheet" />*@
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="row hreader">
+                <div class="page-header">
+                    <div class="col-md-offset-3 ">
+                        <h2>University Course and Result Management System</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-3 col-sm-4 col-md-4 col-lg-3" >
+                    <ul class="list-unstyled ">
+                        <li><a class="btn btn-primary btn-block" href="/Department/Save"><span class="glyphicon glyphicon-floppy-saved "></span>   Save Department</a> </li>
+                        <li><a class="btn btn-primary btn-block" href="/Department/GetAllDepartment"><span class="glyphicon glyphicon-th-list"></span>   View Department</a> </li>
+                        <li><a class="btn btn-primary btn-block" href="/Course/SaveCourse"><span class="glyphicon glyphicon-floppy-saved"></span>   Save Course</a> </li>
+                        <li><a class="btn btn-primary btn-block" href="/Teacher/SaveTeacher"><span class="glyphicon glyphicon-user"></span>   Save Teacher</a> </li>
+                        <li><a class="btn btn-primary btn-block" href="/CourseAssign/CourseAssignToTeacher"><span class="glyphicon glyphicon-home"></span>   Course Assign to Teacher</a> </li>
+                        <li><a class="btn btn-primary btn-block" href="/CourseView/ViewCourse"><span class="glyphicon glyphicon-th-list"></span>   View Course</a> </li>
+                        <li><a class="btn btn-primary btn-block" href="/StudentRegister/StudentRegister"><span class="glyphicon glyphicon-user"></span>   Register Student</a> </li>
+                        <li><a class="btn btn-primary btn-block" href="/AllocateClassrooms/AllocateClassRoom"><span class="glyphicon glyphicon-plus-sign"></span>   Allocate Classrooms</a> </li>
+                        <li><a class="btn btn-primary btn-block" href="/ClassSched/ClassSchedule"><span class="glyphicon glyphicon-th-list"></span>  View Class Schedule</a> </li>
+                        <li><a class="btn btn-primary btn-block" href="/CourseEnroll/EnrollCourse"><span class="glyphicon glyphicon-plus-sign"></span>   Enroll In a Course</a> </li>
+                        <li><a class="btn btn-primary btn-block" href="/SaveStudentResult/StudentResult"><span class="glyphicon glyphicon-floppy-saved"></span>   Save Student Result</a> </li>
+                        <li><a class="btn btn-primary btn-block" href="/ViewResult/ResultView"><span class="glyphicon glyphicon-th-list"></span>   View Result</a> </li>
+                        <li><a class="btn btn-primary btn-block" href="/UnAssingTeacher/UnAssignTeachers"><span class="glyphicon glyphicon-retweet"></span>   Unassign All Courses</a> </li>
+                        <li><a class="btn btn-primary btn-block" href="/UnassignRoom/UnAssinClassRoom"><span class="glyphicon glyphicon-retweet"></span>   Unallocate All Classrooms</a> </li>
+                     </ul>
+                </div>
+                <div class="col-xs-9 col-sm-8  col-md-8 col-lg-9 ">
+                    <div class="site_content">
+                        @RenderBody()
+                    </div>
+                </div>
+            </div>
+            <div class="row hreader">
+                <div>
+                    <h3 align="center"><b>Developed by  &copy; Sniper56</b> </h3>
+                </div>
+            </div>
+        </div>
+    </div><!--close main-->
+    <script src="~/Scripts/jquery-3.1.0.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/modernizr-1.5.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+</body>
+</html>
